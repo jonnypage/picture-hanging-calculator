@@ -1,13 +1,24 @@
 <template>
   <div class="container">
     <Header />
-    <Measurements
-      :initialData="{ wallWidth, pictureCount, pictureWidth }"
-      @wall-width="setWallWidth"
-      @picture-count="setPictureCount"
-      @picture-width="setPictureWidth"
-    />
-    <div>
+    <div class="measurement-input">
+      <TextInput
+        title="Width of the wall"
+        @input-change="setWallWidth"
+        :initialValue="wallWidth"
+      />
+      <TallyCounter
+        title="Number of Pictures"
+        @tally-change="setPictureCount"
+        :initialValue="pictureCount"
+      />
+      <TextInput
+        title="Width of the picture"
+        @input-change="setPictureWidth"
+        :initialValue="pictureWidth"
+      />
+    </div>
+    <!-- <div>
       <div>
         <div>Space Between Pictures: {{ spaceBetweenPictures }} cm</div>
         <div>
@@ -17,19 +28,34 @@
           Space From Wall To First Picture Center:
           {{ spaceFromWallToFirstPictureCenter }} cm
         </div>
+        <div v-show="spaceBetweenPictures ? false : true">
+          Opps, the pictures overlap!
+        </div>
       </div>
-    </div>
+    </div> -->
+    <WallVisualization
+      :wallWidth="wallWidth"
+      :pictureCount="pictureCount"
+      :pictureWidth="pictureWidth"
+      :spaceBetweenPictures="spaceBetweenPictures"
+      :spaceBetweenPictureCenters="spaceBetweenPictureCenters"
+      :spaceFromWallToFirstPictureCenter="spaceFromWallToFirstPictureCenter"
+    />
   </div>
 </template>
 
 <script>
 import Header from "./components/Header";
-import Measurements from "./components/Measurements";
+import TextInput from "./components/TextInput";
+import TallyCounter from "./components/TallyCounter";
+import WallVisualization from "./components/WallVisualization";
 export default {
   name: "App",
   components: {
     Header,
-    Measurements,
+    TextInput,
+    TallyCounter,
+    WallVisualization,
   },
   methods: {
     setWallWidth(width) {
@@ -48,35 +74,28 @@ export default {
       pictureCount: 3,
       pictureWidth: 33.5,
       pictures: [{ pictureWidth: 0 }],
+      picturesOverlap: false,
     };
   },
   computed: {
     spaceBetweenPictures: function () {
-      //console.log("spaceBetweenPictures", this.wallWidth, this.pictureCount);
       const value =
         (this.wallWidth - this.pictureCount * this.pictureWidth) /
         (this.pictureCount + 1);
 
+      if (value <= 0) {
+        return 0;
+      }
       return Math.round(value * 100) / 100;
     },
     spaceBetweenPictureCenters: function () {
-      // console.log(
-      //   "spaceBetweenPictureCenters",
-      //   this.spaceBetweenPictures,
-      //   this.pictureWidth
-      // );
-      const value = (this.spaceBetweenPictures + this.pictureWidth).toFixed(2);
+      const value = this.spaceBetweenPictures + this.pictureWidth;
+
       return Math.round(value * 100) / 100;
     },
     spaceFromWallToFirstPictureCenter: function () {
-      // console.log(
-      //   "spaceFromWallToFirstPictureCenter",
-      //   this.spaceBetweenPictures,
-      //   this.pictureWidth
-      // );
-      const value = (this.spaceBetweenPictures + this.pictureWidth / 2).toFixed(
-        2
-      );
+      const value = this.spaceBetweenPictures + this.pictureWidth / 2;
+
       return Math.round(value * 100) / 100;
     },
   },
@@ -103,5 +122,11 @@ body {
   display: flex;
   flex-direction: column;
   width: 100%;
+}
+.measurement-input {
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+  margin-bottom: 20px;
 }
 </style>

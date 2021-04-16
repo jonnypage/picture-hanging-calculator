@@ -6,8 +6,7 @@
       id="wallWidth"
       name="wallWidth"
       v-model="wallWidth"
-      @keyup="onWallWidth"
-      @change="onWallWidth"
+      @input="onWallWidth"
     />
   </div>
   <div>
@@ -17,7 +16,7 @@
       id="pictureCount"
       name="pictureCount"
       v-model="pictureCount"
-      @change="onPictureCount"
+      @input="onPictureCount"
     />
   </div>
   <div>
@@ -27,7 +26,7 @@
       id="pictureWidth"
       name="pictureWidth"
       v-model="pictureWidth"
-      @change="onPictureWidth"
+      @input="onPictureWidth"
     />
   </div>
 </template>
